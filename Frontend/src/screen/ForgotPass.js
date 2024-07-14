@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import tw from 'twrnc';
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, } from "react-native";
-export default function Login({ navigation }) {
+export default function ForgotPass({ navigation }) {
   const [fdata, setFdata] = useState({
-    email: "",
-    password: ""
+    reemail: "",
   })
   const [errormsg, setErrorMsg] = useState(null);
   const sendToBackend = () => {
-    if ((fdata.email == "") || (fdata.password == "")) {
+    if ((fdata.reemail == "")) {
       setErrorMsg("All fields are required")
     }
     else {
-      fetch('http://192.168.31.156:3000/user/login', {
+      fetch('http://192.168.31.156:3000/user/forgotpass', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -25,14 +24,13 @@ export default function Login({ navigation }) {
               setErrorMsg(data.error);
             }
             else {
-              uid = data.uid.q
-              tok = data.tokenizer.token
-              alert('Logged in succesfully');
-              navigation.navigate('Home', { token: tok, userid: uid });
+              q = data.p;
+              navigation.navigate('ResetPassword', { id: q });
             }
           }
         )
     }
+
   }
   return (
 
@@ -42,47 +40,24 @@ export default function Login({ navigation }) {
       </View>
 
       <View style={styles.container}>
-        <Text style={styles.signinText}>SIGN IN</Text>
+        <Text style={styles.signinText}>FORGOT PASSWORD</Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
-            placeholder="User ID"
+            placeholder="Enter your registered email"
             placeholderTextColor="#003f5c"
             onPressIn={() => setErrorMsg(null)}
-            onChangeText={(text) => setFdata({ ...fdata, email: text })}
+            onChangeText={(text) => setFdata({ ...fdata, reemail: text })}
           />
         </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Password"
-            placeholderTextColor="#003f5c"
-            secureTextEntry={true}
-            onPressIn={() => setErrorMsg(null)}
-            onChangeText={(text) => setFdata({ ...fdata, password: text })}
-          />
-        </View>
-        <TouchableOpacity>
-          <Text style={styles.forgot_button}
-            onPress={() => {
-              navigation.navigate('ForgotPassword')
-            }}
-          >Forgot Password?</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.loginBtn}>
           <Text style={styles.loginText}
             onPress={() => {
               sendToBackend();
-            }
-            }>LOGIN</Text>
+            }}
+          >
+            Confirm</Text>
         </TouchableOpacity>
-        <View style={{ margin: 20, flexDirection: 'row' }}>
-          <Text style={styles.userText}>New User?</Text>
-          <TouchableOpacity>
-            <Text style={styles.signup_button} onPress={() =>
-              navigation.navigate('Signup')}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
         <View>
           {
             errormsg ? <Text style={{ "color": "red" }}>{errormsg}</Text> : null
@@ -90,28 +65,27 @@ export default function Login({ navigation }) {
         </View>
       </View>
     </View>
+
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#312e81",
-    height: '66.666667%',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    height: '33.333333%'
   },
   container1: {
     flex: 1,
     backgroundColor: "#fff",
-    height: '33.333333%'
+    height: '66.666667%'
   },
   signinText:
   {
     height: 40,
-    marginLeft: 135,
-    marginTop: 20,
-    marginBottom: 20,
-    fontSize: 32,
+    marginLeft: 80,
+    marginTop: 40,
+    marginBottom: 50,
+    fontSize: 28,
     fontWeight: "bold",
     "color": "#fff"
   },
@@ -132,26 +106,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   TextInput: {
+    height: 50,
     flex: 1,
     padding: 10,
+    marginLeft: 20,
     "color": "#312e81",
     fontWeight: "bold",
-    marginLeft: 20,
-    fontSize: 16,
-  },
-  forgot_button: {
-    height: 30,
-    marginLeft: 130,
-    "color": "#38bdf8",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  signup_button:
-  {
-    fontSize: 16,
-    "color": "#38bdf8",
-    fontWeight: "bold",
-    marginLeft: 10
+    fontSize: 16
   },
   loginBtn: {
     width: "70%",
@@ -169,13 +130,4 @@ const styles = StyleSheet.create({
     "color": "#77F3F7",
     fontWeight: "bold"
   },
-  imageStyle: {
-    padding: 10,
-    marginLeft: 20,
-    marginTop: 10,
-    height: 25,
-    width: 25,
-    resizeMode: 'stretch',
-    alignItems: 'center',
-  }
 });
